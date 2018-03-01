@@ -28,11 +28,7 @@ public class StepCounterManager implements SensorEventListener {
 
     private SensorManager mSensorManager;
     private Sensor mStepCount;
-
-    private float mCount;
-
     private StepCounterObservable mStepCounterObservable;
-    private StepDetectorObservable mStepDetectorObservable;
 
     private StepCounterManager() {
         mSensorManager = (SensorManager) GlobalConfig.getAppContext().getSystemService(Context.SENSOR_SERVICE);
@@ -45,10 +41,9 @@ public class StepCounterManager implements SensorEventListener {
         mStepCount = mSensorManager.getDefaultSensor(SENSER_TYPE_C);
 
         mStepCounterObservable = new StepCounterObservable();
-        mStepDetectorObservable = new StepDetectorObservable();
     }
 
-    public static StepCounterManager getInstance() {
+    static StepCounterManager getInstance() {
         if (instance == null) {
             synchronized (StepCounterManager.class) {
                 if (instance == null) {
@@ -61,12 +56,12 @@ public class StepCounterManager implements SensorEventListener {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-    public void register() {
+    void register() {
         if (mStepCount == null) {
             return;
         }
 
-        String info = " mStepCount name = "
+        String info = "name = "
                 + mStepCount.getName() + ", version = " + mStepCount.getVersion() + ", vendor = " + mStepCount.getVendor()
                 + ", FifoMaxEventCount = " + mStepCount.getFifoMaxEventCount()
                 + ", FifoReservedEventCount = " + mStepCount.getFifoReservedEventCount() + ", MinDelay = "
@@ -75,29 +70,21 @@ public class StepCounterManager implements SensorEventListener {
                 + ", ReportingMode = " + mStepCount.getReportingMode() + ", Resolution = " + mStepCount.getResolution() + ", MaxDelay = " + mStepCount.getMaxDelay();
 
 
-        Log.i(TAG, "StepCount info " + info);
+        Log.i(TAG, "芯片信息 : " + info);
 
         mSensorManager.registerListener(this, mStepCount, SensorManager.SENSOR_DELAY_FASTEST);
     }
 
-    public void unRegister() {
+    void unRegister() {
         mSensorManager.unregisterListener(this);
     }
 
-    public void addStepCounterObserver(Observer observer) {
+    void addStepCounterObserver(Observer observer) {
         mStepCounterObservable.addObserver(observer);
     }
 
-    public void addStepDetectorObserver(Observer observer) {
-        mStepDetectorObservable.addObserver(observer);
-    }
-
-    public void clearStepObserver() {
+    void clearStepObserver() {
         mStepCounterObservable.deleteObservers();
-    }
-
-    public void clearStepDetectorObserver() {
-        mStepDetectorObservable.deleteObservers();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
@@ -106,7 +93,6 @@ public class StepCounterManager implements SensorEventListener {
     }
 
     private void setStepCount(float count) {
-        mCount = count;
         mStepCounterObservable.sendChange(count);
     }
 

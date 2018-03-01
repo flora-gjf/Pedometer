@@ -2,7 +2,6 @@ package com.gjf.pedometer;
 
 import android.os.Build;
 import android.os.Bundle;
-import android.os.PowerManager;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.TextView;
@@ -45,7 +44,6 @@ public class MainActivity extends AppCompatActivity {
         super.onDestroy();
 
         StepCounterManager.getInstance().clearStepObserver();
-        StepCounterManager.getInstance().clearStepDetectorObserver();
         StepCounterManager.getInstance().unRegister();
     }
 }
